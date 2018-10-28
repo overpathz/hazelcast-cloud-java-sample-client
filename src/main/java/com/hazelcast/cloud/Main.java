@@ -13,6 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
         ClientConfig config = new ClientConfig();
+        config.setProperty("hazelcast.client.statistics.enabled","true");
         config.setGroupConfig(new GroupConfig("YOUR_CLUSTER_NAME", "YOUR_CLUSTER_PASSWORD"));
         config.setProperty(ClientProperty.HAZELCAST_CLOUD_DISCOVERY_TOKEN.getName(), "YOUR_CLUSTER_DISCOVERY_TOKEN");
         config.getNetworkConfig().setSSLConfig(new SSLConfig().setEnabled(true));
