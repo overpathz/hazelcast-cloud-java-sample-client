@@ -1,1 +1,1 @@
-# Sample Java Client For Hazelcast Cloud Community
+# Sample Java Client For Hazelcast Cloud
