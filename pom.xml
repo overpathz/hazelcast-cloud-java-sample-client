@@ -37,7 +37,16 @@
                             <goal>java</goal>
                         </goals>
                         <configuration>
-                            <mainClass>com.hazelcast.cloud.Main</mainClass>
+                            <mainClass>com.hazelcast.cloud.Client</mainClass>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>client-with-ssl</id>
+                        <goals>
+                            <goal>java</goal>
+                        </goals>
+                        <configuration>
+                            <mainClass>com.hazelcast.cloud.ClientWithSsl</mainClass>
                         </configuration>
                     </execution>
                 </executions>
