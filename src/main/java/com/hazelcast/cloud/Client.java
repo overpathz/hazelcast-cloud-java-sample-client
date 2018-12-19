@@ -9,9 +9,11 @@ import com.hazelcast.config.SSLConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IMap;
 
+import java.util.Random;
+
 public class Client {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         ClientConfig config = new ClientConfig();
         config.setGroupConfig(new GroupConfig("YOUR_CLUSTER_NAME", "YOUR_CLUSTER_PASSWORD"));
         config.setProperty("hazelcast.client.statistics.enabled","true");
@@ -20,7 +22,23 @@ public class Client {
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         IMap<String, String> map = client.getMap("map");
         map.put("key", "value");
-        System.out.println("Value:"+ map.get("key"));
+        if(map.get("key").equals("value")) {
+            System.out.println("Connection Successful!");
+            System.out.println("Now, map will be filled with random entries.");
+        }
+        else {
+            throw new RuntimeException("Connection failed, check your configuration.");
+        }
+        Random random = new Random();
+        while (true) {
+            int temp = (int) random.nextInt(100_000);
+            map.put("key" + temp, "value" + temp);
+            map.get("key" + random.nextInt(100_000));
+            Thread.sleep(1000);
+            if(map.size() % 50 == 0 ) {
+                System.out.println("map size:" + map.size());
+            }
+        }
     }
 
 }
