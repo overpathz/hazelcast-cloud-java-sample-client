@@ -31,13 +31,13 @@ public class Client {
         }
         Random random = new Random();
         while (true) {
-            int temp = (int) random.nextInt(100_000);
-            map.put("key" + temp, "value" + temp);
+            int randomKey = (int) random.nextInt(100_000);
+            map.put("key" + randomKey, "value" + randomKey);
             map.get("key" + random.nextInt(100_000));
-            Thread.sleep(100);
-            if(map.size() % 50 == 0 ) {
+            if(randomKey % 10 == 0 ) {
                 System.out.println("map size:" + map.size());
             }
+            Thread.sleep(100);
         }
     }
 
