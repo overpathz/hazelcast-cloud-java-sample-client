@@ -37,7 +37,6 @@ public class Client {
             if(randomKey % 10 == 0 ) {
                 System.out.println("map size:" + map.size());
             }
-            Thread.sleep(100);
         }
     }
 
