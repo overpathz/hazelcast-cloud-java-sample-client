@@ -11,40 +11,34 @@ import com.hazelcast.core.IMap;
 import java.util.Random;
 
 /**
- *
  * This is boilerplate application that configures client to connect Hazelcast Cloud cluster.
  * After successful connection, it puts random entries into the map.
- *
- * See: https://docs.hazelcast.cloud/docs/java-client
- *
+ * <p>
+ * See: <a href="https://docs.cloud.hazelcast.com/docs/java-client">https://docs.cloud.hazelcast.com/docs/java-client</a>
  */
 public class Client {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         ClientConfig config = new ClientConfig();
         config.setGroupConfig(new GroupConfig("YOUR_CLUSTER_NAME", "YOUR_CLUSTER_PASSWORD"));
-        config.setProperty("hazelcast.client.statistics.enabled","true");
+        config.setProperty("hazelcast.client.statistics.enabled", "true");
         config.setProperty(ClientProperty.HAZELCAST_CLOUD_DISCOVERY_TOKEN.getName(), "YOUR_CLUSTER_DISCOVERY_TOKEN");
         config.setProperty(HazelcastCloudDiscovery.CLOUD_URL_BASE_PROPERTY.getName(), "YOUR_DISCOVERY_URL");
+
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
+
+        System.out.println("Connection Successful!");
+        System.out.println("Now the map named 'map' will be filled with random entries.");
+
         IMap<String, String> map = client.getMap("map");
-        map.put("key", "value");
-        if(map.get("key").equals("value")) {
-            System.out.println("Connection Successful!");
-            System.out.println("Now, `map` will be filled with random entries.");
-        }
-        else {
-            throw new RuntimeException("Connection failed, check your configuration.");
-        }
         Random random = new Random();
         while (true) {
-            int randomKey = (int) random.nextInt(100_000);
-            map.put("key" + randomKey, "value" + randomKey);
-            map.get("key" + random.nextInt(100_000));
-            if(randomKey % 10 == 0 ) {
-                System.out.println("map size:" + map.size());
+            int randomKey = random.nextInt(100_000);
+            map.put("key-" + randomKey, "value-" + randomKey);
+            map.get("key-" + random.nextInt(100_000));
+            if (randomKey % 10 == 0) {
+                System.out.println("Current map size: " + map.size());
             }
         }
     }
-
 }
