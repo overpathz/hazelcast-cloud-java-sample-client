@@ -6,7 +6,7 @@
 
     <groupId>com.hazelcast.cloud</groupId>
     <artifactId>hazelcast-cloud-java-sample-client</artifactId>
-    <version>1.0-BETA</version>
+    <version>1.0.0</version>
 
     <dependencies>
         <dependency>
