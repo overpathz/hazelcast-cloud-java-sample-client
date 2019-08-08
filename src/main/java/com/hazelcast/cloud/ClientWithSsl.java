@@ -23,12 +23,12 @@ import java.util.Random;
  */
 public class ClientWithSsl {
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) throws Exception {
       ClassLoader classLoader = ClientWithSsl.class.getClassLoader();
       Properties props = new Properties();
-      props.setProperty("javax.net.ssl.keyStore", classLoader.getResource("client.keystore").getPath());
+      props.setProperty("javax.net.ssl.keyStore", classLoader.getResource("client.keystore").toURI().getPath());
       props.setProperty("javax.net.ssl.keyStorePassword", "YOUR_SSL_PASSWORD");
-      props.setProperty("javax.net.ssl.trustStore", classLoader.getResource("client.truststore").getPath());
+      props.setProperty("javax.net.ssl.trustStore", classLoader.getResource("client.truststore").toURI().getPath());
       props.setProperty("javax.net.ssl.trustStorePassword", "YOUR_SSL_PASSWORD");
       ClientConfig config = new ClientConfig();
       config.getNetworkConfig().setSSLConfig(new SSLConfig().setEnabled(true).setProperties(props));
