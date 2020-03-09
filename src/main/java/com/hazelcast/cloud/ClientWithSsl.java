@@ -2,15 +2,16 @@ package com.hazelcast.cloud;
 
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
-import com.hazelcast.client.spi.impl.discovery.HazelcastCloudDiscovery;
-import com.hazelcast.client.spi.properties.ClientProperty;
-import com.hazelcast.config.GroupConfig;
 import com.hazelcast.config.SSLConfig;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IMap;
+import com.hazelcast.map.IMap;
 
 import java.util.Properties;
 import java.util.Random;
+
+import static com.hazelcast.client.impl.spi.impl.discovery.HazelcastCloudDiscovery.CLOUD_URL_BASE_PROPERTY;
+import static com.hazelcast.client.properties.ClientProperty.HAZELCAST_CLOUD_DISCOVERY_TOKEN;
+import static com.hazelcast.client.properties.ClientProperty.STATISTICS_ENABLED;
 
 /**
  * This is boilerplate application that configures client to connect Hazelcast Cloud cluster.
@@ -29,10 +30,9 @@ public class ClientWithSsl {
         props.setProperty("javax.net.ssl.trustStorePassword", "YOUR_SSL_PASSWORD");
         ClientConfig config = new ClientConfig();
         config.getNetworkConfig().setSSLConfig(new SSLConfig().setEnabled(true).setProperties(props));
-        config.setGroupConfig(new GroupConfig("YOUR_CLUSTER_NAME", "YOUR_CLUSTER_PASSWORD"));
-        config.setProperty("hazelcast.client.statistics.enabled", "true");
-        config.setProperty(ClientProperty.HAZELCAST_CLOUD_DISCOVERY_TOKEN.getName(), "YOUR_CLUSTER_DISCOVERY_TOKEN");
-        config.setProperty(HazelcastCloudDiscovery.CLOUD_URL_BASE_PROPERTY.getName(), "YOUR_DISCOVERY_URL");
+        config.setProperty(STATISTICS_ENABLED.getName(), "true");
+        config.setProperty(HAZELCAST_CLOUD_DISCOVERY_TOKEN.getName(), "YOUR_CLUSTER_DISCOVERY_TOKEN");
+        config.setProperty(CLOUD_URL_BASE_PROPERTY.getName(), "YOUR_DISCOVERY_URL");
 
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
 
