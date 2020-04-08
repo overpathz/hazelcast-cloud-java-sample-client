@@ -33,7 +33,8 @@ public class ClientWithSsl {
         config.setProperty(STATISTICS_ENABLED.getName(), "true");
         config.setProperty(HAZELCAST_CLOUD_DISCOVERY_TOKEN.getName(), "YOUR_CLUSTER_DISCOVERY_TOKEN");
         config.setProperty(CLOUD_URL_BASE_PROPERTY.getName(), "YOUR_DISCOVERY_URL");
-
+        config.setClusterName("YOUR_CLUSTER_NAME");
+        
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
 
         System.out.println("Connection Successful!");
