@@ -1,13 +1,12 @@
 package com.hazelcast.cloud;
 
+import java.util.Random;
+
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.map.IMap;
 
-import java.util.Random;
-
-import static com.hazelcast.client.impl.spi.impl.discovery.HazelcastCloudDiscovery.CLOUD_URL_BASE_PROPERTY;
 import static com.hazelcast.client.properties.ClientProperty.HAZELCAST_CLOUD_DISCOVERY_TOKEN;
 import static com.hazelcast.client.properties.ClientProperty.STATISTICS_ENABLED;
 
@@ -19,11 +18,13 @@ import static com.hazelcast.client.properties.ClientProperty.STATISTICS_ENABLED;
  */
 public class Client {
 
+    private static final String CLOUD_URL_BASE_PROPERTY = "hazelcast.client.cloud.url";
+
     public static void main(String[] args) {
         ClientConfig config = new ClientConfig();
         config.setProperty(STATISTICS_ENABLED.getName(), "true");
         config.setProperty(HAZELCAST_CLOUD_DISCOVERY_TOKEN.getName(), "YOUR_CLUSTER_DISCOVERY_TOKEN");
-        config.setProperty(CLOUD_URL_BASE_PROPERTY.getName(), "YOUR_DISCOVERY_URL");
+        config.setProperty(CLOUD_URL_BASE_PROPERTY, "YOUR_DISCOVERY_URL");
         config.setClusterName("YOUR_CLUSTER_NAME");
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
 
