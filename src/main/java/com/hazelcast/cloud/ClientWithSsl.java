@@ -20,8 +20,6 @@ import static com.hazelcast.client.properties.ClientProperty.STATISTICS_ENABLED;
  */
 public class ClientWithSsl {
 
-    private static final String CLOUD_URL_BASE_PROPERTY = "hazelcast.client.cloud.url";
-
     public static void main(String[] args) throws Exception {
         ClassLoader classLoader = ClientWithSsl.class.getClassLoader();
         Properties props = new Properties();
@@ -33,9 +31,9 @@ public class ClientWithSsl {
         config.getNetworkConfig().setSSLConfig(new SSLConfig().setEnabled(true).setProperties(props));
         config.setProperty(STATISTICS_ENABLED.getName(), "true");
         config.setProperty(HAZELCAST_CLOUD_DISCOVERY_TOKEN.getName(), "YOUR_CLUSTER_DISCOVERY_TOKEN");
-        config.setProperty(CLOUD_URL_BASE_PROPERTY, "YOUR_DISCOVERY_URL");
+        config.setProperty("hazelcast.client.cloud.url", "YOUR_DISCOVERY_URL");
         config.setClusterName("YOUR_CLUSTER_NAME");
-        
+
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
 
         System.out.println("Connection Successful!");
