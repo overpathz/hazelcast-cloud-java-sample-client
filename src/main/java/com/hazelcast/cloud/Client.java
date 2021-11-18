@@ -64,15 +64,6 @@ public class Client {
      * @param client - a {@link HazelcastInstance} client.
      */
     private static void sqlExample(HazelcastInstance client) {
-        IMap<String, String> cities = client.getMap("cities");
-
-        System.out.println("Putting some data...");
-        cities.put("Australia", "Canberra");
-        cities.put("Croatia", "Zagreb");
-        cities.put("Czech Republic", "Prague");
-        cities.put("England", "London");
-        cities.put("Turkey", "Ankara");
-        cities.put("United States", "Washington, DC");
 
         System.out.println("Creating a mapping...");
         // See: https://docs.hazelcast.com/hazelcast/5.0/sql/mapping-to-maps
@@ -83,6 +74,20 @@ public class Client {
                 "'valueFormat' = 'java'," +
                 "'valueJavaClass' = 'java.lang.String')")) {
             System.out.println("The mapping has been created successfully.");
+        }
+
+        System.out.println("--------------------");
+        System.out.println("Inserting data via SQL...");
+
+        String insertQuery = "INSERT INTO cities VALUES" +
+            "('Australia','Canberra')," +
+            "('Croatia','Zagreb')," +
+            "('Czech Republic','Prague')," +
+            "('England','London')," +
+            "('Turkey','Ankara')," +
+            "('United States','Washington, DC');";
+        try (SqlResult ignored = client.getSql().execute(insertQuery)) {
+            System.out.println("The data has been inserted successfully.");
         }
 
         System.out.println("--------------------");
