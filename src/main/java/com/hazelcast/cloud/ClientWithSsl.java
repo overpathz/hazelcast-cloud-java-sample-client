@@ -85,30 +85,39 @@ public class ClientWithSsl {
 
         System.out.println("Creating a mapping...");
         // See: https://docs.hazelcast.com/hazelcast/5.0/sql/mapping-to-maps
-        try (SqlResult ignored = client.getSql().execute(
-            "CREATE MAPPING cities TYPE IMap OPTIONS (" +
-                "'keyFormat' = 'java'," +
-                "'keyJavaClass' = 'java.lang.String'," +
-                "'valueFormat' = 'java'," +
-                "'valueJavaClass' = 'java.lang.String')")) {
+        final String mappingQuery = ""
+            + "CREATE OR REPLACE MAPPING cities TYPE IMap"
+            + " OPTIONS ("
+            + "     'keyFormat' = 'java',"
+            + "     'keyJavaClass' = 'java.lang.String',"
+            + "     'valueFormat' = 'java',"
+            + "     'valueJavaClass' = 'java.lang.String'"
+            + " )";
+        try (SqlResult ignored = client.getSql().execute(mappingQuery)) {
             System.out.println("The mapping has been created successfully.");
         }
-
         System.out.println("--------------------");
-        System.out.println("Inserting data via SQL...");
 
-        String insertQuery = "INSERT INTO cities VALUES" +
-            "('Australia','Canberra')," +
-            "('Croatia','Zagreb')," +
-            "('Czech Republic','Prague')," +
-            "('England','London')," +
-            "('Turkey','Ankara')," +
-            "('United States','Washington, DC');";
+        System.out.println("Deleting data via SQL...");
+        try (SqlResult ignored = client.getSql().execute("DELETE FROM cities")) {
+            System.out.println("The data has been deleted successfully.");
+        }
+        System.out.println("--------------------");
+
+        System.out.println("Inserting data via SQL...");
+        String insertQuery = ""
+            + "INSERT INTO cities VALUES"
+            + "('Australia','Canberra'),"
+            + "('Croatia','Zagreb'),"
+            + "('Czech Republic','Prague'),"
+            + "('England','London'),"
+            + "('Turkey','Ankara'),"
+            + "('United States','Washington, DC');";
         try (SqlResult ignored = client.getSql().execute(insertQuery)) {
             System.out.println("The data has been inserted successfully.");
         }
-
         System.out.println("--------------------");
+
         System.out.println("Retrieving all the data via SQL...");
         try (SqlResult result = client.getSql().execute("SELECT * FROM cities")) {
 
@@ -118,8 +127,8 @@ public class ClientWithSsl {
                 System.out.printf("%s - %s\n", country, city);
             }
         }
-
         System.out.println("--------------------");
+
         System.out.println("Retrieving a city name via SQL...");
         try (SqlResult result = client.getSql()
             .execute("SELECT __key, this FROM cities WHERE __key = ?", "United States")) {
@@ -147,27 +156,30 @@ public class ClientWithSsl {
         createMappingForCountries(client);
 
         populateCountriesWithMap(client);
+
         selectAllCountries(client);
 
-        populateCities(client);
         createMappingForCities(client);
+
+        populateCities(client);
 
         selectCitiesByCountry(client, "AU");
 
         selectCountriesAndCities(client);
 
-        System.out.println("--------------------");
         System.exit(0);
     }
 
     private static void createMappingForCountries(HazelcastInstance client) {
         //see: https://docs.hazelcast.com/hazelcast/5.0/sql/mapping-to-maps#json-objects
+        System.out.println("Creating mapping for countries...");
+
         String mappingSql = ""
             + "CREATE OR REPLACE MAPPING country("
-            + " __key VARCHAR,"
-            + " isoCode VARCHAR,"
-            + " country VARCHAR)"
-            + " TYPE IMap"
+            + "     __key VARCHAR,"
+            + "     isoCode VARCHAR,"
+            + "     country VARCHAR"
+            + ") TYPE IMap"
             + " OPTIONS ("
             + "     'keyFormat' = 'java',"
             + "     'keyJavaClass' = 'java.lang.String',"
@@ -178,41 +190,36 @@ public class ClientWithSsl {
             rs.updateCount();
             System.out.println("Mapping for countries has been created");
         }
+        System.out.println("--------------------");
     }
 
     private static void populateCountriesWithMap(HazelcastInstance client) {
         // see: https://docs.hazelcast.com/hazelcast/5.0/data-structures/creating-a-map#writing-json-to-a-map
-        System.out.println("Populate Countries with map - values as JSON");
+        System.out.println("Populating 'countries' map with JSON values...");
+
         IMap<String, HazelcastJsonValue> countries = client.getMap("country");
         countries.put("AU", CountryJsonSerializer.countryAsJson(newCountry("AU", "Australia")));
         countries.put("EN", CountryJsonSerializer.countryAsJson(newCountry("EN", "England")));
         countries.put("US", CountryJsonSerializer.countryAsJson(newCountry("US", "United States")));
-        countries.put("CZ", CountryJsonSerializer.countryAsJson(newCountry("US", "Czech Republic")));
+        countries.put("CZ", CountryJsonSerializer.countryAsJson(newCountry("CZ", "Czech Republic")));
+
+        System.out.println("The 'countries' map has been populated.");
+        System.out.println("--------------------");
     }
 
     private static void selectAllCountries(HazelcastInstance client) {
         String sql = "SELECT c.country from country c";
-        System.out.println("--------------------");
         System.out.println("Select all countries with sql = " + sql);
         try (SqlResult result = client.getSql().execute(sql)) {
-            result.forEach(row -> System.out.println("country=" + row.getObject("country")));
+            result.forEach(row -> System.out.println("country = " + row.getObject("country")));
         }
-    }
-
-    private static void populateCities(HazelcastInstance client) {
-        // see: https://docs.hazelcast.com/hazelcast/5.0/data-structures/creating-a-map#writing-json-to-a-map
         System.out.println("--------------------");
-        System.out.println("Populate cities");
-        IMap<Integer, HazelcastJsonValue> cities = client.getMap("city");
-        cities.put(1, CityJsonSerializer.cityAsJson(newCity("AU", "Canberra", 354644)));
-        cities.put(2, CityJsonSerializer.cityAsJson(newCity("CZ", "Prague", 1227332)));
-        cities.put(3, CityJsonSerializer.cityAsJson(newCity("EN", "London", 8174100)));
-        cities.put(4, CityJsonSerializer.cityAsJson(newCity("US", "Washington, DC", 601723)));
     }
-
 
     private static void createMappingForCities(HazelcastInstance client) {
         //see: https://docs.hazelcast.com/hazelcast/5.0/sql/mapping-to-maps#json-objects
+        System.out.println("Creating mapping for cities...");
+
         String mappingSql = ""
             + "CREATE OR REPLACE MAPPING city("
             + " __key INT ,"
@@ -230,6 +237,21 @@ public class ClientWithSsl {
             rs.updateCount();
             System.out.println("Mapping for cities has been created");
         }
+        System.out.println("--------------------");
+    }
+
+    private static void populateCities(HazelcastInstance client) {
+        // see: https://docs.hazelcast.com/hazelcast/5.0/data-structures/creating-a-map#writing-json-to-a-map
+        System.out.println("Populating 'city' map with JSON values...");
+
+        IMap<Integer, HazelcastJsonValue> cities = client.getMap("city");
+        cities.put(1, CityJsonSerializer.cityAsJson(newCity("AU", "Canberra", 354644)));
+        cities.put(2, CityJsonSerializer.cityAsJson(newCity("CZ", "Prague", 1227332)));
+        cities.put(3, CityJsonSerializer.cityAsJson(newCity("EN", "London", 8174100)));
+        cities.put(4, CityJsonSerializer.cityAsJson(newCity("US", "Washington, DC", 601723)));
+
+        System.out.println("The 'city' map has been populated.");
+        System.out.println("--------------------");
     }
 
     private static void selectCitiesByCountry(HazelcastInstance client, String country) {
@@ -238,9 +260,10 @@ public class ClientWithSsl {
         System.out.println("Select city and population with sql = " + sql);
         try (SqlResult result = client.getSql().execute(sql, country)) {
             result.forEach(row ->
-                System.out.printf("city=%s, population=%s%n", row.getObject("city"), row.getObject("population"))
+                System.out.printf("city = %s, population = %s%n", row.getObject("city"), row.getObject("population"))
             );
         }
+        System.out.println("--------------------");
     }
 
     private static void selectCountriesAndCities(HazelcastInstance client) {
@@ -249,7 +272,6 @@ public class ClientWithSsl {
             + "  FROM country c"
             + "       JOIN city t ON c.isoCode = t.country";
 
-        System.out.println("--------------------");
         System.out.println("Select country and city data in query that joins tables");
         System.out.printf("%4s | %15s | %20s | %15s |%n", "iso", "country", "city", "population");
 
@@ -263,6 +285,7 @@ public class ClientWithSsl {
                 );
             });
         }
+        System.out.println("--------------------");
     }
 
 }
