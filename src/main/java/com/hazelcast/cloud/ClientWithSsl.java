@@ -34,6 +34,7 @@ public class ClientWithSsl {
             classLoader.getResource("client.truststore").toURI().getPath());
         props.setProperty("javax.net.ssl.trustStorePassword", "YOUR_SSL_PASSWORD");
         ClientConfig config = new ClientConfig();
+        config.getNetworkConfig().setRedoOperation(true);
         config.getNetworkConfig().setSSLConfig(new SSLConfig().setEnabled(true).setProperties(props));
         config.setProperty(HAZELCAST_CLOUD_DISCOVERY_TOKEN.getName(), "YOUR_CLUSTER_DISCOVERY_TOKEN");
         config.setProperty("hazelcast.client.cloud.url", "YOUR_DISCOVERY_URL");
