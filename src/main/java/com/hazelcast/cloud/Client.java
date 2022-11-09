@@ -1,5 +1,7 @@
 package com.hazelcast.cloud;
 
+import java.util.Random;
+
 import com.hazelcast.client.HazelcastClient;
 import com.hazelcast.client.config.ClientConfig;
 import com.hazelcast.cloud.jobs.UpperCaseFunction;
@@ -17,8 +19,6 @@ import com.hazelcast.sql.SqlResult;
 import com.hazelcast.sql.SqlRow;
 import com.hazelcast.sql.SqlService;
 
-import java.util.Random;
-
 /**
  * This is boilerplate application that configures client to connect Hazelcast
  * Cloud cluster.
@@ -30,8 +30,8 @@ public class Client {
     public static void main(String[] args) {
         ClientConfig config = new ClientConfig();
         config.getNetworkConfig().getCloudConfig()
-                .setDiscoveryToken("YOUR_CLUSTER_DISCOVERY_TOKEN")
-                .setEnabled(true);
+            .setDiscoveryToken("YOUR_CLUSTER_DISCOVERY_TOKEN")
+            .setEnabled(true);
         config.setProperty("hazelcast.client.cloud.url", "YOUR_DISCOVERY_URL");
         config.setClusterName("YOUR_CLUSTER_NAME");
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
@@ -99,11 +99,11 @@ public class Client {
         // See: https://docs.hazelcast.com/hazelcast/5.1/sql/mapping-to-maps
 
         String mappingQuery = ""
-                + "CREATE OR REPLACE MAPPING capitals TYPE IMap"
-                + " OPTIONS ("
-                + "     'keyFormat' = 'varchar',"
-                + "     'valueFormat' = 'varchar'"
-                + " )";
+            + "CREATE OR REPLACE MAPPING capitals TYPE IMap"
+            + " OPTIONS ("
+            + "     'keyFormat' = 'varchar',"
+            + "     'valueFormat' = 'varchar'"
+            + " )";
         try (SqlResult ignored = sqlService.execute(mappingQuery)) {
             System.out.println("The mapping has been created successfully.");
         }
@@ -121,13 +121,13 @@ public class Client {
     private static void populateCapitals(SqlService sqlService) {
         System.out.println("Inserting data via SQL...");
         String insertQuery = ""
-                + "INSERT INTO capitals VALUES"
-                + "('Australia','Canberra'),"
-                + "('Croatia','Zagreb'),"
-                + "('Czech Republic','Prague'),"
-                + "('England','London'),"
-                + "('Turkey','Ankara'),"
-                + "('United States','Washington, DC');";
+            + "INSERT INTO capitals VALUES"
+            + "('Australia','Canberra'),"
+            + "('Croatia','Zagreb'),"
+            + "('Czech Republic','Prague'),"
+            + "('England','London'),"
+            + "('Turkey','Ankara'),"
+            + "('United States','Washington, DC');";
         try (SqlResult ignored = sqlService.execute(insertQuery)) {
             System.out.println("The data has been inserted successfully.");
         }
@@ -150,7 +150,7 @@ public class Client {
     private static void selectCapitalNames(SqlService sqlService) {
         System.out.println("Retrieving the capital name via SQL...");
         try (SqlResult result = sqlService
-                .execute("SELECT __key, this FROM capitals WHERE __key = ?", "United States")) {
+            .execute("SELECT __key, this FROM capitals WHERE __key = ?", "United States")) {
 
             for (SqlRow row : result) {
                 String country = row.getObject("__key");
@@ -196,15 +196,15 @@ public class Client {
         System.out.println("Creating mapping for countries...");
 
         String mappingSql = ""
-                + "CREATE OR REPLACE MAPPING country("
-                + "     __key VARCHAR,"
-                + "     isoCode VARCHAR,"
-                + "     country VARCHAR"
-                + ") TYPE IMap"
-                + " OPTIONS ("
-                + "     'keyFormat' = 'varchar',"
-                + "     'valueFormat' = 'json-flat'"
-                + " )";
+            + "CREATE OR REPLACE MAPPING country("
+            + "     __key VARCHAR,"
+            + "     isoCode VARCHAR,"
+            + "     country VARCHAR"
+            + ") TYPE IMap"
+            + " OPTIONS ("
+            + "     'keyFormat' = 'varchar',"
+            + "     'valueFormat' = 'json-flat'"
+            + " )";
 
         try (SqlResult ignored = sqlService.execute(mappingSql)) {
             System.out.println("Mapping for countries has been created");
@@ -240,16 +240,16 @@ public class Client {
         System.out.println("Creating mapping for cities...");
 
         String mappingSql = ""
-                + "CREATE OR REPLACE MAPPING city("
-                + " __key INT ,"
-                + " country VARCHAR ,"
-                + " city VARCHAR,"
-                + " population BIGINT)"
-                + " TYPE IMap"
-                + " OPTIONS ("
-                + "     'keyFormat' = 'int',"
-                + "     'valueFormat' = 'json-flat'"
-                + " )";
+            + "CREATE OR REPLACE MAPPING city("
+            + " __key INT ,"
+            + " country VARCHAR ,"
+            + " city VARCHAR,"
+            + " population BIGINT)"
+            + " TYPE IMap"
+            + " OPTIONS ("
+            + "     'keyFormat' = 'int',"
+            + "     'valueFormat' = 'json-flat'"
+            + " )";
 
         try (SqlResult ignored = sqlService.execute(mappingSql)) {
             System.out.println("Mapping for cities has been created");
@@ -277,7 +277,7 @@ public class Client {
         System.out.println("Select city and population with sql = " + sql);
         try (SqlResult result = sqlService.execute(sql, country)) {
             result.forEach(row ->
-                    System.out.printf("city = %s, population = %s%n", row.getObject("city"), row.getObject("population"))
+                System.out.printf("city = %s, population = %s%n", row.getObject("city"), row.getObject("population"))
             );
         }
         System.out.println("--------------------");
@@ -285,9 +285,9 @@ public class Client {
 
     private static void selectCountriesAndCities(SqlService sqlService) {
         String sql = ""
-                + "SELECT c.isoCode, c.country, t.city, t.population"
-                + "  FROM country c"
-                + "       JOIN city t ON c.isoCode = t.country";
+            + "SELECT c.isoCode, c.country, t.city, t.population"
+            + "  FROM country c"
+            + "       JOIN city t ON c.isoCode = t.country";
 
         System.out.println("Select country and city data in query that joins tables");
         System.out.printf("%4s | %15s | %20s | %15s |%n", "iso", "country", "city", "population");
@@ -295,10 +295,10 @@ public class Client {
         try (SqlResult result = sqlService.execute(sql)) {
             result.forEach(row -> {
                 System.out.printf("%4s | %15s | %20s | %15s |%n",
-                        row.getObject("isoCode"),
-                        row.getObject("country"),
-                        row.getObject("city"),
-                        row.getObject("population")
+                    row.getObject("isoCode"),
+                    row.getObject("country"),
+                    row.getObject("city"),
+                    row.getObject("population")
                 );
             });
         }
@@ -335,7 +335,7 @@ public class Client {
      * @param client- a {@link HazelcastInstance} client.
      */
     private static void jetJobExample(HazelcastInstance client) {
-        // See: https://docs.hazelcast.com/hazelcast/5.2/pipelines/submitting-jobs
+        // See: https://docs.hazelcast.com/hazelcast/5.1/pipelines/submitting-jobs
         System.out.println("Submitting Jet job");
 
         BatchSource<String> items = TestSources.items(
