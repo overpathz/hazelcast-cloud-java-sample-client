@@ -14,7 +14,6 @@ import com.hazelcast.jet.pipeline.Pipeline;
 import com.hazelcast.jet.pipeline.Sinks;
 import com.hazelcast.jet.pipeline.test.TestSources;
 import com.hazelcast.map.IMap;
-import com.hazelcast.spi.exception.TargetDisconnectedException;
 import com.hazelcast.sql.SqlResult;
 import com.hazelcast.sql.SqlRow;
 import com.hazelcast.sql.SqlService;
@@ -335,14 +334,8 @@ public class Client {
         int iterationCounter = 0;
         while (true) {
             int randomKey = random.nextInt(100_000);
-            try {
-                map.put("key-" + randomKey, "value-" + randomKey);
-                map.get("key-" + random.nextInt(100_000));
-            }
-            catch (IllegalStateException | TargetDisconnectedException ex) {
-                //rolling update (cluster can be in passive state) e.g. update custom classes
-                ex.printStackTrace();
-            }
+            map.put("key-" + randomKey, "value-" + randomKey);
+            map.get("key-" + random.nextInt(100_000));
             if (++iterationCounter == 10) {
                 iterationCounter = 0;
                 System.out.println("Current map size: " + map.size());
