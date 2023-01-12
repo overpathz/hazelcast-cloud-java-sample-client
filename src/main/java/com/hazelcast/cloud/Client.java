@@ -19,8 +19,7 @@ import com.hazelcast.sql.SqlRow;
 import com.hazelcast.sql.SqlService;
 
 /**
- * This is boilerplate application that configures client to connect Hazelcast
- * Cloud cluster.
+ * This is boilerplate application that configures client to connect Hazelcast Cloud cluster.
  * <p>
  * See: <a href="https://docs.hazelcast.com/cloud/java-client">https://docs.hazelcast.com/cloud/java-client</a>
  */
@@ -34,22 +33,25 @@ public class Client {
         config.setProperty("hazelcast.client.cloud.url", "YOUR_DISCOVERY_URL");
         config.setClusterName("YOUR_CLUSTER_NAME");
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
-
         System.out.println("Connection Successful!");
+        try {
+            mapExample(client);
 
-        mapExample(client);
+            //sqlExample(client);
 
-        //sqlExample(client);
+            //compactSerializationExample(client);
 
-        //compactSerializationExample(client);
+            //nonStopMapExample(client);
 
-        //nonStopMapExample(client);
+            //jetJobExample(client);
 
-        //jetJobExample(client);
-
-        client.shutdown();
-
-        System.exit(0);
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        finally {
+            client.shutdown();
+        }
     }
 
     /**
@@ -171,8 +173,7 @@ public class Client {
     }
 
     /**
-     * This example shows how to work with Hazelcast SQL queries via Maps that
-     * contains compact serialized values.
+     * This example shows how to work with Hazelcast SQL queries via Maps that contains compact serialized values.
      *
      * <ul>
      *     <li>Select single element from a Map</li>
@@ -321,8 +322,7 @@ public class Client {
     }
 
     /**
-     * This example shows how to work with Hazelcast maps, where the map is
-     * updated continuously.
+     * This example shows how to work with Hazelcast maps, where the map is updated continuously.
      *
      * @param client - a {@link HazelcastInstance} client.
      */
@@ -344,8 +344,8 @@ public class Client {
     }
 
     /**
-     * This example shows how to submit simple Jet job which uses logger as a sink.
-     * You will be able to see the results of job execution in the Hazelcast cluster logs.
+     * This example shows how to submit simple Jet job which uses logger as a sink. You will be able to see the results
+     * of job execution in the Hazelcast cluster logs.
      *
      * @param client- a {@link HazelcastInstance} client.
      */
@@ -370,4 +370,5 @@ public class Client {
 
         System.out.println("Jet job submitted");
     }
+
 }
