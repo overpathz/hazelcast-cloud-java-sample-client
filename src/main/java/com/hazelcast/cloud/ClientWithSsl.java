@@ -16,13 +16,13 @@ import com.hazelcast.jet.pipeline.Pipeline;
 import com.hazelcast.jet.pipeline.Sinks;
 import com.hazelcast.jet.pipeline.test.TestSources;
 import com.hazelcast.map.IMap;
+import com.hazelcast.spi.exception.TargetDisconnectedException;
 import com.hazelcast.sql.SqlResult;
 import com.hazelcast.sql.SqlRow;
 import com.hazelcast.sql.SqlService;
 
 /**
- * This is boilerplate application that configures client to connect Hazelcast
- * Cloud cluster.
+ * This is boilerplate application that configures client to connect Hazelcast Cloud cluster.
  * <p>
  * See: <a href="https://docs.hazelcast.com/cloud/java-client">https://docs.hazelcast.com/cloud/java-client</a>
  */
@@ -45,22 +45,24 @@ public class ClientWithSsl {
         config.setClusterName("YOUR_CLUSTER_NAME");
 
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
-
         System.out.println("Connection Successful!");
 
-        mapExample(client);
+        try {
 
-        //sqlExample(client);
+            mapExample(client);
 
-        //compactSerializationExample(client);
+            //sqlExample(client);
 
-        //nonStopMapExample(client);
+            //compactSerializationExample(client);
 
-        //jetJobExample(client);
+            //nonStopMapExample(client);
 
-        client.shutdown();
+            //jetJobExample(client);
 
-        System.exit(0);
+        }
+        finally {
+            client.shutdown();
+        }
     }
 
     /**
@@ -182,8 +184,7 @@ public class ClientWithSsl {
     }
 
     /**
-     * This example shows how to work with Hazelcast SQL queries via Maps that
-     * contains compact serialized values.
+     * This example shows how to work with Hazelcast SQL queries via Maps that contains compact serialized values.
      *
      * <ul>
      *     <li>Select single element from a Map</li>
@@ -332,8 +333,7 @@ public class ClientWithSsl {
     }
 
     /**
-     * This example shows how to work with Hazelcast maps, where the map is
-     * updated continuously.
+     * This example shows how to work with Hazelcast maps, where the map is updated continuously.
      *
      * @param client - a {@link HazelcastInstance} client.
      */
@@ -345,8 +345,14 @@ public class ClientWithSsl {
         int iterationCounter = 0;
         while (true) {
             int randomKey = random.nextInt(100_000);
-            map.put("key-" + randomKey, "value-" + randomKey);
-            map.get("key-" + random.nextInt(100_000));
+            try {
+                map.put("key-" + randomKey, "value-" + randomKey);
+                map.get("key-" + random.nextInt(100_000));
+            }
+            catch (IllegalStateException | TargetDisconnectedException ex) {
+                //rolling update (cluster can be in passive state) e.g. update custom classes
+                ex.printStackTrace();
+            }
             if (++iterationCounter == 10) {
                 iterationCounter = 0;
                 System.out.println("Current map size: " + map.size());
@@ -355,8 +361,8 @@ public class ClientWithSsl {
     }
 
     /**
-     * This example shows how to submit simple Jet job which uses logger as a sink.
-     * You will be able to see the results of job execution in the Hazelcast cluster logs.
+     * This example shows how to submit simple Jet job which uses logger as a sink. You will be able to see the results
+     * of job execution in the Hazelcast cluster logs.
      *
      * @param client- a {@link HazelcastInstance} client.
      */
@@ -381,4 +387,5 @@ public class ClientWithSsl {
 
         System.out.println("Jet job submitted");
     }
+
 }
