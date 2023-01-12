@@ -47,6 +47,9 @@ public class Client {
             //jetJobExample(client);
 
         }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
         finally {
             client.shutdown();
         }

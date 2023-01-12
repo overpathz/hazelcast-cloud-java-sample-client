@@ -60,6 +60,9 @@ public class ClientWithSsl {
             //jetJobExample(client);
 
         }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
         finally {
             client.shutdown();
         }
