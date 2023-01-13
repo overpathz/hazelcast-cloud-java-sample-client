@@ -338,14 +338,14 @@ public class Client {
             try {
                 map.put("key-" + randomKey, "value-" + randomKey);
                 map.get("key-" + random.nextInt(100_000));
+                if (++iterationCounter == 10) {
+                    iterationCounter = 0;
+                    System.out.println("Current map size: " + map.size());
+                }
             }
             catch (IllegalStateException | TargetDisconnectedException ex) {
                 //rolling update (cluster can be in passive state) e.g. update custom classes
                 ex.printStackTrace();
-            }
-            if (++iterationCounter == 10) {
-                iterationCounter = 0;
-                System.out.println("Current map size: " + map.size());
             }
         }
     }
