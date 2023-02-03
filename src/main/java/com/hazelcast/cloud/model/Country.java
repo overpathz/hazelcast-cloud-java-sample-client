@@ -1,12 +1,22 @@
 package com.hazelcast.cloud.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
 public final class Country {
-    private String isoCode;
 
-    private String country;
+    private final String isoCode;
+
+    private final String country;
+
+    public Country(String isoCode, String country) {
+        this.isoCode = isoCode;
+        this.country = country;
+    }
+
+    public String getIsoCode() {
+        return isoCode;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
 }

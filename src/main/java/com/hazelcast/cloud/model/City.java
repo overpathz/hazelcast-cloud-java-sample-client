@@ -1,14 +1,29 @@
 package com.hazelcast.cloud.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-
-@Data
-@AllArgsConstructor
 public final class City {
-    private String country;
 
-    private String city;
+    private final String country;
 
-    private int population;
+    private final String city;
+
+    private final int population;
+
+    public City(String country, String city, int population) {
+        this.country = country;
+        this.city = city;
+        this.population = population;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public int getPopulation() {
+        return population;
+    }
+
 }
