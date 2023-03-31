@@ -183,6 +183,6 @@ public class ClientWithSsl {
 
         client.getJet().newJob(pipeline, jobConfig);
 
-        System.out.println("Jet job submitted. \nYou can see the results in the logs. Go to your Viridian cluster, and click the 'Logs'.");
+        System.out.println("Jet job submitted. \nYou can see the results in the logs (go to your cluster page in the Viridian console and click the 'Logs' link) or in Management Center - Jobs section (also available through the Viridian cluster page).");
     }
 }
