@@ -78,7 +78,7 @@ public class ClientWithSsl {
         }
     }
 
-    private static void createMapping(SqlService sqlService) {
+    protected static void createMapping(SqlService sqlService) {
         // See: https://docs.hazelcast.com/hazelcast/latest/sql/mapping-to-maps#compact-objects
         System.out.print("\nCreating mapping for cities...");
 
@@ -102,7 +102,7 @@ public class ClientWithSsl {
         }
     }
 
-    private static void insertCities(HazelcastInstance client) {
+    protected static void insertCities(HazelcastInstance client) {
         System.out.print("\nInserting cities into 'cities' map...");
 
         String insertQuery = "INSERT INTO cities "
