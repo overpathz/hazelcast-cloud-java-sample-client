@@ -53,9 +53,6 @@ public class Client {
             fetchCities(client.getSql());
             jetJobExample(client);
         }
-        catch (Exception ex) {
-            ex.printStackTrace();
-        }
         finally {
             client.shutdown();
         }

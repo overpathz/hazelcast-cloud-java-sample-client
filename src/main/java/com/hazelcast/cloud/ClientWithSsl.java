@@ -71,8 +71,6 @@ public class ClientWithSsl {
             insertCities(client);
             fetchCities(client.getSql());
             jetJobExample(client);
-        } catch (Exception ex) {
-            ex.printStackTrace();
         } finally {
             client.shutdown();
         }
