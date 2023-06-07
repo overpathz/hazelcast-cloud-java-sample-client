@@ -10,6 +10,7 @@ import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
@@ -17,7 +18,7 @@ import static com.hazelcast.cloud.ClientWithSsl.*;
 
 public class JdbcClient {
 
-    public static void main(String[] args) throws URISyntaxException {
+    public static void main(String[] args) throws Exception {
         // Configure the client
         ClassLoader classLoader = JdbcClient.class.getClassLoader();
         Properties tlsProperties = new Properties();
@@ -45,7 +46,7 @@ public class JdbcClient {
         fetchDataThroughJdbc(tlsProperties, config);
     }
 
-    private static void fetchDataThroughJdbc(Properties tlsProperties, ClientConfig config) {
+    private static void fetchDataThroughJdbc(Properties tlsProperties, ClientConfig config) throws SQLException {
         String jdbcUrl = String.format("jdbc:hazelcast://%s/?discoveryToken=%s&cloudUrl=%s&sslEnabled=true",
                 config.getClusterName(),
                 config.getNetworkConfig().getCloudConfig().getDiscoveryToken(),
@@ -61,6 +62,7 @@ public class JdbcClient {
             }
         } catch (Exception e) {
             System.out.println("An error occurred while using the JDBC driver: " + e.getMessage());
+            throw e;
         }
     }
 }
