@@ -58,6 +58,7 @@ public class ClientWithSsl {
             .setEnabled(true);
         config.setProperty("hazelcast.client.cloud.url", "YOUR_DISCOVERY_URL");
         config.setClusterName("YOUR_CLUSTER_NAME");
+        config.getSecurityConfig().setCredentials(new com.hazelcast.security.UsernamePasswordCredentials("YOUR_CLIENT_USERNAME","YOUR_CLIENT_PASSWORD"));
 
         // Register serializer of the City.
         config.getSerializationConfig().getCompactSerializationConfig().addSerializer(new CitySerializer());

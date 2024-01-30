@@ -27,7 +27,6 @@ import com.hazelcast.jet.pipeline.Pipeline;
 import com.hazelcast.jet.pipeline.Sinks;
 import com.hazelcast.jet.pipeline.test.TestSources;
 import com.hazelcast.map.IMap;
-import com.hazelcast.security.UsernamePasswordCredentials;
 import com.hazelcast.sql.SqlResult;
 import com.hazelcast.sql.SqlRow;
 import com.hazelcast.sql.SqlService;
@@ -46,7 +45,7 @@ public class Client {
             .setEnabled(true);
         config.setProperty("hazelcast.client.cloud.url", "YOUR_DISCOVERY_URL");
         config.setClusterName("YOUR_CLUSTER_NAME");
-        config.getSecurityConfig().setCredentials(new UsernamePasswordCredentials("YOUR_CLIENT_USERNAME","YOUR_CLIENT_PASSWORD"));
+        config.getSecurityConfig().setCredentials(new com.hazelcast.security.UsernamePasswordCredentials("YOUR_CLIENT_USERNAME","YOUR_CLIENT_PASSWORD"));
         HazelcastInstance client = HazelcastClient.newHazelcastClient(config);
         System.out.println("Connection Successful!");
         try {
