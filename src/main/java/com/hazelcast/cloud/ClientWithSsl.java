@@ -55,6 +55,8 @@ import com.hazelcast.vector.VectorCollection;
 import com.hazelcast.vector.VectorDocument;
 import com.hazelcast.vector.VectorValues;
 
+import static java.lang.Math.min;
+
 /**
  * This is boilerplate application that configures client to connect Hazelcast Cloud cluster.
  * <p>
@@ -234,9 +236,11 @@ public class ClientWithSsl {
             for (var it = results.results(); it.hasNext(); ) {
                 SearchResult<String, MovieMetadata> result = it.next();
                 String plotSummarySubstring = result.getValue().getPlotSummary();
-                plotSummarySubstring = plotSummarySubstring.substring(0, Math.min(plotSummarySubstring.length(), 130));
-                System.out.printf("%d) title: \"%s\"\trelease date: \"%s\"\tplot: \"%s..\"%n\n", index++,
-                    result.getValue().getName(), result.getValue().getReleaseDate(), plotSummarySubstring);
+                System.out.printf("%3d | %-40s | %-14s | %-60s%n", index++,
+                    result.getValue().getName().substring(0, min(40, result.getValue().getName().length())),
+                    result.getValue().getReleaseDate(),
+                    plotSummarySubstring.substring(0, min(plotSummarySubstring.length(), 60))
+                );
             }
         }
     }
