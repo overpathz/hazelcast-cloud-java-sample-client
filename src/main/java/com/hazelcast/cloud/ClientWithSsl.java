@@ -254,7 +254,7 @@ public class ClientWithSsl {
         Map<String, MovieMetadata> movieIdToMeta = new ConcurrentHashMap<>();
         Map<String, String> movieIdToPlotSummary = new ConcurrentHashMap<>();
 
-        Scanner scanner = new Scanner(ClassLoader.getSystemResourceAsStream("/plot_summaries.txt"));
+        Scanner scanner = new Scanner(ClassLoader.getSystemResourceAsStream("plot_summaries.txt"));
         Pattern pattern = Pattern.compile("(\\d+)\t(.*)\n");
         scanner.findAll(pattern)
             .forEach(matchResult -> {
@@ -262,7 +262,7 @@ public class ClientWithSsl {
                 String plot = matchResult.group(2);
                 movieIdToPlotSummary.put(id, plot);
             });
-        scanner = new Scanner(ClassLoader.getSystemResourceAsStream("/movie.metadata.tsv"));
+        scanner = new Scanner(ClassLoader.getSystemResourceAsStream("movie.metadata.tsv"));
         pattern = Pattern.compile("(\\d+)\t[^\t]*\t([^\t]*)\t([^\t]*)\t.*\n");
         scanner.findAll(pattern)
             .forEach(matchResult -> {
